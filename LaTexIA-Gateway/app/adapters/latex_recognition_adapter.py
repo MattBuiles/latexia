@@ -4,7 +4,7 @@ from app.core.config import settings
 class LatexRecognitionAdapter:
     def __init__(self, api_url: str):
         self.api_url = api_url
-        self.client = httpx.AsyncClient(follow_redirects=True)
+        self.client = httpx.AsyncClient(follow_redirects=True, timeout=180)
 
     async def recognize_formula(self, image_data: bytes):
         """Envía la imagen al servicio de reconocimiento de LaTeX y devuelve el código LaTeX"""

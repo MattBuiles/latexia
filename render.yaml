@@ -1,0 +1,43 @@
+# Tres servicios web gratis: el gateway (con la interfaz) y sus dos dependencias.
+# Con el plan gratis se duermen tras ~15 min sin tráfico; el gateway despierta a
+# los otros dos en paralelo al abrirse la página.
+services:
+  - type: web
+    name: latexia-recognition
+    runtime: python
+    plan: free
+    rootDir: latex-recognition-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /docs
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+
+  - type: web
+    name: latexia-preprocessing
+    runtime: python
+    plan: free
+    rootDir: preprocessing-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /docs
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+
+  - type: web
+    name: latexia-gateway
+    runtime: python
+    plan: free
+    rootDir: LaTexIA-Gateway
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: PREPROCESSING_URL
+        value: https://latexia-preprocessing.onrender.com
+      - key: LATEX_RECOGNITION_URL
+        value: https://latexia-recognition.onrender.com
