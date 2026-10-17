@@ -10,7 +10,7 @@ class PreprocessingAdapter(PreprocessingPort):
         """ Envía la imagen al microservicio de preprocesamiento y recibe la respuesta """
         files = {"file": ("image.jpg", image_data.getvalue(), "image/jpeg")}
         
-        response = requests.post(f"{self.api_url}/preprocess/", files=files)
+        response = requests.post(f"{self.api_url}/preprocess/", files=files, timeout=180)
         response.raise_for_status()  # Verificar que la petición fue exitosa
         
         return response.json()  # Devolvemos la imagen procesada
